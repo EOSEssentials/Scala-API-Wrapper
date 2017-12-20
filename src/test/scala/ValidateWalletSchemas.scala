@@ -17,6 +17,6 @@ class ValidateWalletSchemas extends AsyncFlatSpec with Matchers {
   ).map(x => underToCamel(x))
 
   "WalletAPI" should "have all required methods" in {
-    assert(SchemaValidationHelpers.validate(methods, "services.WalletAPI"))
+    assert(TestingHelpers.validateMethods(methods, "services.WalletAPI"))
   }
 }

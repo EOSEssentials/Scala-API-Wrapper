@@ -1,8 +1,9 @@
-[0m[[0mdebug[0m] [0mRunning TaskDef(ValidateWalletSchemas, org.scalatest.tools.Framework$$anon$1@3e08adb6, false, [SuiteSelector])[0m
-[0m[[0minfo[0m] [0m[36mRun completed in 229 milliseconds.[0m[0m
-[0m[[0minfo[0m] [0m[36mTotal number of tests run: 1[0m[0m
+[0m[[0mdebug[0m] [0mRunning TaskDef(ChainApiTest, org.scalatest.tools.Framework$$anon$1@501e86e3, false, [SuiteSelector])[0m
+[0m[[0minfo[0m] [0m[36mRun completed in 2 seconds, 287 milliseconds.[0m[0m
+[0m[[0minfo[0m] [0m[36mTotal number of tests run: 3[0m[0m
 [0m[[0minfo[0m] [0m[36mSuites: completed 1, aborted 0[0m[0m
-[0m[[0minfo[0m] [0m[36mTests: succeeded 1, failed 0, canceled 0, ignored 0, pending 0[0m[0m
-[0m[[0minfo[0m] [0m[32mAll tests passed.[0m[0m
-[0m[[0mdebug[0m] [0mPassed tests:[0m
-[0m[[0mdebug[0m] [0m	ValidateWalletSchemas[0m
+[0m[[0minfo[0m] [0m[36mTests: succeeded 2, failed 1, canceled 0, ignored 0, pending 0[0m[0m
+[0m[[0minfo[0m] [0m[31m*** 1 TEST FAILED ***[0m[0m
+[0m[[31merror[0m] [0mFailed tests:[0m
+[0m[[31merror[0m] [0m	ChainApiTest[0m
+[0m[[31merror[0m] [0m(test:[31mtestOnly[0m) sbt.TestsFailedException: Tests unsuccessful[0m

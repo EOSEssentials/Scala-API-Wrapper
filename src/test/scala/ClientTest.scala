@@ -1,6 +1,7 @@
 import org.scalatest.{Assertion, AsyncFlatSpec, FlatSpec, Matchers}
 import play.api.libs.json.{JsValue, Json}
 import utils.{Client, Logger}
+import TestingHelpers.assertNonEmptyJsonResponse
 
 import scala.concurrent.Future
 
@@ -8,7 +9,6 @@ import scala.concurrent.Future
 class ClientTest extends AsyncFlatSpec with Matchers {
 
   private def uri(route:String):String = s"https://jsonplaceholder.typicode.com$route"
-  implicit def assertNonEmptyJsonResponse(json:Option[JsValue]):Assertion = assert(json.nonEmpty)
   implicit def requestToAssertion(future:Future[Option[JsValue]]):Future[Assertion] = future map { response => response }
   val blank:JsValue = Json.obj()
 

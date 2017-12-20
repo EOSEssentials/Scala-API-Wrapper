@@ -1,3 +1,4 @@
+import org.scalatest.{Assertion, Matchers}
 import play.api.libs.json.{JsObject, JsValue}
 import utils.StringUtils.underToCamel
 import utils.{Client, Logger}
@@ -5,8 +6,8 @@ import utils.{Client, Logger}
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
-object SchemaValidationHelpers {
-  def validate(chainMethods:List[String], classPath:String): Boolean = {
+object TestingHelpers extends Matchers {
+  def validateMethods(chainMethods:List[String], classPath:String): Boolean = {
     val classFinder = Class.forName(classPath)
     chainMethods.forall(methodName => {
       try { classFinder.getMethod(methodName); true }
@@ -18,4 +19,7 @@ object SchemaValidationHelpers {
     case None => Logger.warn(s"Could not get ${uri.split("/").last} schema from EOS"); None
     case Some(chainJs) => Some(chainJs.as[JsObject].value.toList.map(x => underToCamel(x._1)))
   }
+
+  implicit def assertNonEmptyJsonResponse(json:Option[JsValue]):Assertion = assert(json.nonEmpty)
+  implicit def assertNonEmptyJsonResponseWithLogger(json:Option[JsValue]):Assertion = { Logger.debug(s"$json"); assert(json.nonEmpty) }
 }

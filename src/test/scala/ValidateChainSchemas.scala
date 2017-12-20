@@ -6,7 +6,7 @@ class ValidateChainSchemas extends AsyncFlatSpec with Matchers {
   var methods:List[String] = List()
 
   "Client" should "be able to fetch methods schema" in {
-    SchemaValidationHelpers.getSchemaJson(jsonSchemaURI) map {
+    TestingHelpers.getSchemaJson(jsonSchemaURI) map {
       case None =>            assert(1==2)
       case Some(results) =>   methods = results
                               assert(methods.nonEmpty)
@@ -14,7 +14,7 @@ class ValidateChainSchemas extends AsyncFlatSpec with Matchers {
   }
 
   "ChainAPI" should "have all required methods" in {
-    assert(SchemaValidationHelpers.validate(methods, "services.ChainAPI"))
+    assert(TestingHelpers.validateMethods(methods, "services.ChainAPI"))
   }
 
 }
