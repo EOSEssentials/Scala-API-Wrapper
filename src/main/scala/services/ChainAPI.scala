@@ -1,0 +1,17 @@
+package services
+
+object ChainAPI {
+
+  def getInfo = ???
+  def getBlock = ???
+  def getAccount = ???
+  def getCode = ???
+  def getTableRows = ???
+  def abiJsonToBin = ???
+  def abiBinToJson = ???
+  def pushBlock = ???
+  def pushTransaction = ???
+  def pushTransactions = ???
+  def getRequiredKeys = ???
+
+}

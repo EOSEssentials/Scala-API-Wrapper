@@ -1,0 +1,9 @@
+[0m[[0minfo[0m] [0m[32mClientTest:[0m[0m
+[0m[[0minfo[0m] [0m[32mClient[0m[0m
+[0m[[0minfo[0m] [0m[32m- should be able to do GET requests[0m[0m
+[0m[[0minfo[0m] [0m[32m- should be able to do POST requests[0m[0m
+[0m[[0minfo[0m] [0m[32m- should be able to do PUT requests[0m[0m
+[0m[[0minfo[0m] [0m[32m- should be able to do PATCH requests[0m[0m
+[0m[[0minfo[0m] [0m[32m- should be able to do DELETE requests[0m[0m
+[0m[[0minfo[0m] [0m[32m- should be able to test a real EOS route[0m[0m
+[0m[[0minfo[0m] [0m[32m- should be able to pull routes from EOS github[0m[0m
