@@ -21,6 +21,10 @@ object ChainAPI extends Settings {
     "participation_rate": "1.00000000000000000"
   }
    */
+  /***
+    *
+    * @return
+    */
   def getInfo: Future[Option[JsValue]] =
     Client.get(route("get_info"))
 
@@ -38,6 +42,10 @@ object ChainAPI extends Settings {
     "ref_block_prefix": 1492653879
   }
    */
+  /***
+    * @param blockNumOrId - The block number or ID
+    * @return
+    */
   def getBlock(blockNumOrId:String): Future[Option[JsValue]] =
     Client.post(route("get_block"), Json.obj("block_num_or_id" -> blockNumOrId))
 
@@ -80,6 +88,11 @@ object ChainAPI extends Settings {
         ]
     }
    */
+  /***
+    *
+    * @param accountName - The name of the account
+    * @return
+    */
   def getAccount(accountName:String): Future[Option[JsValue]] =
     Client.post(route("get_account"), Json.obj("account_name" -> accountName))
 
@@ -136,23 +149,84 @@ object ChainAPI extends Settings {
     }
 }
    */
-  def getCode(contractName:String): Future[Option[JsValue]] =
-    Client.post(route("get_code"), Json.obj("account_name" -> contractName))
+  /***
+    *
+    * @param accountName - The name of the contract to get the code for
+    * @return
+    */
+  def getCode(accountName:String): Future[Option[JsValue]] =
+    Client.post(route("get_code"), Json.obj("account_name" -> accountName))
 
-  def getTableRows(scope:String, contractName:String, table:String, lowerBound:Long = 0, upperBound:Long = -1, limit:Long = 10) =
+  /*
+  {
+    "rows": [],
+    "more": false
+}
+   */
+  /***
+    *
+    * @param scope - The owner scope
+    * @param code - The contract name
+    * @param table - The table name
+    * @param lowerBound
+    * @param upperBound
+    * @param limit
+    * @return
+    */
+  def getTableRows(scope:String, code:String, table:String, lowerBound:Long = 0, upperBound:Long = -1, limit:Long = 10) =
     Client.post(route("get_table_rows"), Json.obj("scope" -> scope,
-                                                  "code" -> contractName,
+                                                  "code" -> code,
                                                   "table" -> table,
                                                   "json" -> true,
                                                   "lower_bound" -> lowerBound,
                                                   "upper_bound" -> upperBound,
                                                   "limit" -> limit))
 
-  def abiJsonToBin = ???
-  def abiBinToJson = ???
-  def pushBlock = ???
-  def pushTransaction = ???
-  def pushTransactions = ???
-  def getRequiredKeys = ???
+  /*
+  {
+    "binargs": "000000008093dd74000000000094dd74e803000000000000",
+    "required_scope": [],
+    "required_auth": []
+}
+   */
+  /***
+    * @param code - Contract name
+    * @param action - Action name
+    * @param args - Data to turn into binary
+    * @return
+    */
+  def abiJsonToBin(code:String, action:String, args:JsValue) =
+    Client.post(route("abi_json_to_bin"), Json.obj("code" -> code, "action" -> action, "args" -> args))
+
+
+  /*
+  {
+    "args": {
+        "from": "initb",
+        "to": "initc",
+        "quantity": 1000
+    },
+    "required_scope": [],
+    "required_auth": []
+}
+   */
+  /***
+    *
+    * @param code - Contract name
+    * @param action - Action name
+    * @param binargs - Binary data to turn into json
+    * @return
+    */
+  def abiBinToJson(code:String, action:String, binargs:String) =
+    Client.post(route("abi_bin_to_json"), Json.obj("code" -> code, "action" -> action, "binargs" -> binargs))
+
+
+
+//TODO----------- Require other methods from wallet --------
+  def pushBlock = ???                               //TODO--
+  def pushTransaction = ???                         //TODO--
+  def pushTransactions = ???                        //TODO--
+  def getRequiredKeys = ???                         //TODO--
+//TODO------------------------------------------------------
 
 }

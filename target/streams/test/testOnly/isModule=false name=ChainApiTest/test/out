@@ -1,6 +1,0 @@
-[0m[[0minfo[0m] [0m[32mChainApiTest:[0m[0m
-[0m[[0minfo[0m] [0m[32mChainAPI[0m[0m
-[0m[[0minfo[0m] [0m[32m- should be able to get block info[0m[0m
-[0m[[0minfo[0m] [0m[32m- should be able to get a block[0m[0m
-[0m[[0minfo[0m] [0m[31m- should be able to get an account *** FAILED ***[0m[0m
-[0m[[0minfo[0m] [0m[31m  None was empty (TestingHelpers.scala:24)[0m[0m
