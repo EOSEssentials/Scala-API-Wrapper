@@ -55,11 +55,6 @@ object ChainAPI extends Settings {
   def getTableRows(scope:String, code:String, table:String, lowerBound:Long = 0, upperBound:Long = -1, limit:Long = 10):Future[Option[Rows]] =
     getTableRows(GetTableRowsRequest(scope, code, table, true, lowerBound, upperBound, limit))
 
-  /***
-    *
-    * @param request - [[requests.GetTableRowsRequest]]
-    * @return - Instance of [[models.Rows]]
-    */
   def getTableRows(request:GetTableRowsRequest):Future[Option[Rows]] =
     post(route("get_table_rows"), Json.toJson(request)).map(_.map(_.as[Rows]))
 

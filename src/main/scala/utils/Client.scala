@@ -21,14 +21,16 @@ object Client extends Settings {
 
   private def jsReq(rq: BoundRequestBuilder):BoundRequestBuilder = rq setHeader("Content-Type", "application/json")
   implicit private def jsToString(js:JsValue):String = js.toString
+
   implicit private def listenableToJsonFuture(boundRequestBuilder: BoundRequestBuilder): Future[Option[JsValue]] = {
     val promise = Promise[Option[JsValue]]()
     boundRequestBuilder.execute(new AsyncCompletionHandler[Response] {
-      override def onCompleted(response: Response): Response = { promise.success(response.body); response }
+      override def onCompleted(response: Response): Response = { promise.success(response); response }
       override def onThrowable(t: Throwable) { promise.failure(t); super.onThrowable(t) }
     })
     promise.future
   }
+
   implicit private def listenableToStringFuture(boundRequestBuilder: BoundRequestBuilder): Future[Option[String]] = {
     val promise = Promise[Option[String]]()
     boundRequestBuilder.execute(new AsyncCompletionHandler[Response] {
@@ -37,18 +39,17 @@ object Client extends Settings {
     })
     promise.future
   }
-  implicit private def responseToJsonResponse(response: Response):JsonResponse = {
+
+  implicit private def responseToJsonResponse(response: Response):Option[JsValue] = {
     def tryParse:JsValue = try { Json.parse(response.getResponseBodyAsBytes) }
                            catch { case(e:Exception) => e.printStackTrace(); Json.obj() }
 
-    val code:Int = response.getStatusCode
-    val body:Option[JsValue] = List(tryParse).find(_ => code.toString.take(1).toInt == 2)
-    JsonResponse(code, body)
+    List(tryParse).find(_ => is2N(response))
   }
+
   implicit private def responseToStringResponse(response: Response):Option[String] = {
-    response.getStatusCode.toString.take(1).toInt == 2 match {
-      case true => Some(response.getResponseBody)
-      case false => None
-    }
+    List(response.getResponseBody).find(_ => is2N(response))
   }
+
+  private def is2N(response: Response):Boolean = response.getStatusCode.toString.take(1).toInt == 2
 }
