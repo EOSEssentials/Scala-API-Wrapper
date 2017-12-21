@@ -2,7 +2,7 @@ package services
 
 import models._
 import play.api.libs.json.{JsValue, Json}
-import requests.GetTableRowsRequest
+import requests.{AbiBinToJsonRequest, AbiJsonToBinRequest, GetTableRowsRequest}
 import utils.{Client, Settings}
 import utils.Client.{get, post}
 
@@ -44,14 +44,6 @@ object ChainAPI extends Settings {
 
   /***
     *
-    * @param request - [[requests.GetTableRowsRequest]]
-    * @return - Instance of [[models.Rows]]
-    */
-  def getTableRows(request:GetTableRowsRequest):Future[Option[Rows]] =
-    post(route("get_table_rows"), Json.toJson(request)).map(_.map(_.as[Rows]))
-
-  /***
-    *
     * @param scope - The owner scope
     * @param code - The contract name
     * @param table - The table name
@@ -64,13 +56,24 @@ object ChainAPI extends Settings {
     getTableRows(GetTableRowsRequest(scope, code, table, true, lowerBound, upperBound, limit))
 
   /***
+    *
+    * @param request - [[requests.GetTableRowsRequest]]
+    * @return - Instance of [[models.Rows]]
+    */
+  def getTableRows(request:GetTableRowsRequest):Future[Option[Rows]] =
+    post(route("get_table_rows"), Json.toJson(request)).map(_.map(_.as[Rows]))
+
+  /***
     * @param code - Contract name
     * @param action - Action name
     * @param args - Data to turn into binary
     * @return - Instance of [[models.AbiJsonToBin]]
     */
   def abiJsonToBin(code:String, action:String, args:JsValue):Future[Option[AbiJsonToBin]] =
-    post(route("abi_json_to_bin"), Json.obj("code" -> code, "action" -> action, "args" -> args)).map(_.map(_.as[AbiJsonToBin]))
+    abiJsonToBin(AbiJsonToBinRequest(code, action, args))
+
+  def abiJsonToBin(request:AbiJsonToBinRequest):Future[Option[AbiJsonToBin]] =
+    post(route("abi_json_to_bin"), Json.toJson(request)).map(_.map(_.as[AbiJsonToBin]))
 
   /***
     *
@@ -80,15 +83,17 @@ object ChainAPI extends Settings {
     * @return - Instance of [[models.AbiBinToJson]]
     */
   def abiBinToJson(code:String, action:String, binargs:String):Future[Option[AbiBinToJson]] =
-    post(route("abi_bin_to_json"), Json.obj("code" -> code, "action" -> action, "binargs" -> binargs)).map(_.map(_.as[AbiBinToJson]))
+    abiBinToJson(AbiBinToJsonRequest(code, action, binargs))
 
+  def abiBinToJson(request:AbiBinToJsonRequest):Future[Option[AbiBinToJson]] =
+    post(route("abi_bin_to_json"), Json.toJson(request)).map(_.map(_.as[AbiBinToJson]))
 
 
 //TODO----------- Require other methods from wallet --------
+  def getRequiredKeys = ???                         //TODO--
   def pushBlock = ???                               //TODO--
   def pushTransaction = ???                         //TODO--
   def pushTransactions = ???                        //TODO--
-  def getRequiredKeys = ???                         //TODO--
 //TODO------------------------------------------------------
 
 }

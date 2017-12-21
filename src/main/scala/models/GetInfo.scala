@@ -9,6 +9,4 @@ case class GetInfo(server_version:String,
                    head_block_producer:String,
                    recent_slots:String,
                    participation_rate:String)
-object GetInfo {
-  implicit val format = Json.format[GetInfo]
-}
+object GetInfo { implicit val format = Json.format[GetInfo] }
