@@ -9,6 +9,7 @@ class ValidateWalletSchemas extends AsyncFlatSpec with Matchers {
     "wallet_open",
     "wallet_lock",
     "wallet_lock_all",
+    "wallet_unlock",
     "wallet_import_key",
     "wallet_list",
     "wallet_list_keys",

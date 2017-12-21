@@ -46,7 +46,6 @@ object Client extends Settings {
     JsonResponse(code, body)
   }
   implicit private def responseToStringResponse(response: Response):Option[String] = {
-    Logger.debug("Response: " + response)
     response.getStatusCode.toString.take(1).toInt == 2 match {
       case true => Some(response.getResponseBody)
       case false => None
