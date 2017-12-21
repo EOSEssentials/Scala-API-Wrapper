@@ -2,6 +2,7 @@ package services
 
 import models._
 import play.api.libs.json.{JsValue, Json}
+import requests.GetTableRowsRequest
 import utils.{Client, Settings}
 import utils.Client.{get, post}
 
@@ -36,10 +37,18 @@ object ChainAPI extends Settings {
   /***
     *
     * @param accountName - The name of the contract to get the code for
-    * @return
+    * @return - Instance of [[models.Contract]]
     */
   def getCode(accountName:String): Future[Option[Contract]] =
     post(route("get_code"), Json.obj("account_name" -> accountName)).map(_.map(_.as[Contract]))
+
+  /***
+    *
+    * @param request - [[requests.GetTableRowsRequest]]
+    * @return - Instance of [[models.Rows]]
+    */
+  def getTableRows(request:GetTableRowsRequest):Future[Option[Rows]] =
+    post(route("get_table_rows"), Json.toJson(request)).map(_.map(_.as[Rows]))
 
   /***
     *
@@ -49,23 +58,16 @@ object ChainAPI extends Settings {
     * @param lowerBound
     * @param upperBound
     * @param limit
-    * @return
+    * @return - Instance of [[models.Rows]]
     */
-  def getTableRows(scope:String, code:String, table:String, lowerBound:Long = 0,
-                   upperBound:Long = -1, limit:Long = 10):Future[Option[Rows]] =
-    post(route("get_table_rows"), Json.obj("scope" -> scope,
-                                                  "code" -> code,
-                                                  "table" -> table,
-                                                  "json" -> true,
-                                                  "lower_bound" -> lowerBound,
-                                                  "upper_bound" -> upperBound,
-                                                  "limit" -> limit)).map(_.map(_.as[Rows]))
+  def getTableRows(scope:String, code:String, table:String, lowerBound:Long = 0, upperBound:Long = -1, limit:Long = 10):Future[Option[Rows]] =
+    getTableRows(GetTableRowsRequest(scope, code, table, true, lowerBound, upperBound, limit))
 
   /***
     * @param code - Contract name
     * @param action - Action name
     * @param args - Data to turn into binary
-    * @return
+    * @return - Instance of [[models.AbiJsonToBin]]
     */
   def abiJsonToBin(code:String, action:String, args:JsValue):Future[Option[AbiJsonToBin]] =
     post(route("abi_json_to_bin"), Json.obj("code" -> code, "action" -> action, "args" -> args)).map(_.map(_.as[AbiJsonToBin]))
@@ -75,7 +77,7 @@ object ChainAPI extends Settings {
     * @param code - Contract name
     * @param action - Action name
     * @param binargs - Binary data to turn into json
-    * @return
+    * @return - Instance of [[models.AbiBinToJson]]
     */
   def abiBinToJson(code:String, action:String, binargs:String):Future[Option[AbiBinToJson]] =
     post(route("abi_bin_to_json"), Json.obj("code" -> code, "action" -> action, "binargs" -> binargs)).map(_.map(_.as[AbiBinToJson]))
