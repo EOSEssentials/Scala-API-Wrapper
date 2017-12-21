@@ -1,4 +1,5 @@
 import org.scalatest.{AsyncFlatSpec, Matchers}
+import utils.Logger
 import utils.StringUtils.underToCamel
 
 class ValidateWalletSchemas extends AsyncFlatSpec with Matchers {
@@ -14,7 +15,9 @@ class ValidateWalletSchemas extends AsyncFlatSpec with Matchers {
     "wallet_get_public_keys",
     "wallet_set_timeout",
     "wallet_sign_trx"
-  ).map(x => underToCamel(x))
+  )
+    .map(_.replace("wallet_", "")) // Removing the `wallet` before the methods because it is redundant.
+    .map(x => underToCamel(x))
 
   "WalletAPI" should "have all required methods" in {
     assert(TestingHelpers.validateMethods(methods, "services.WalletAPI"))

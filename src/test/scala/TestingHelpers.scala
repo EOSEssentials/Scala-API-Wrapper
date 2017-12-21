@@ -1,3 +1,5 @@
+import java.lang.reflect.Method
+
 import org.scalatest.{Assertion, Matchers}
 import play.api.libs.json.{JsObject, JsValue}
 import utils.StringUtils.underToCamel
@@ -7,12 +9,10 @@ import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
 object TestingHelpers extends Matchers {
-  def validateMethods(chainMethods:List[String], classPath:String): Boolean = {
+  def validateMethods(validationMethods:List[String], classPath:String): Boolean = {
     val classFinder = Class.forName(classPath)
-    chainMethods.forall(methodName => {
-      try { classFinder.getMethod(methodName); true }
-      catch { case (e: Exception) => Logger.warn(s"Method `${e.getMessage}` not found in $classPath.scala"); false }
-    })
+    val methods:List[String] = classFinder.getMethods.map(_.getName).toList
+    validationMethods.forall(methods.contains)
   }
 
   def getSchemaJson(uri:String):Future[Option[List[String]]] = Client.get(uri) map {
@@ -22,4 +22,6 @@ object TestingHelpers extends Matchers {
 
   implicit def assertNonEmptyJsonResponse(json:Option[JsValue]):Assertion = assert(json.nonEmpty)
   implicit def assertNonEmptyJsonResponseWithLogger(json:Option[JsValue]):Assertion = { Logger.debug(s"$json"); assert(json.nonEmpty) }
+  implicit def assertNonEmptyStringResponse(str:Option[String]):Assertion = assert(str.nonEmpty)
+  implicit def assertNonEmptyStringResponseWithLogger(str:Option[String]):Assertion = { Logger.debug(s"$str"); assert(str.nonEmpty) }
 }
