@@ -30,7 +30,7 @@ object Client extends Settings {
   }
   implicit private def responseToJsonResponse(response: Response):JsonResponse = {
     def tryParse:JsValue = try { Json.parse(response.getResponseBodyAsBytes) }
-                           catch { case(e:Exception) => Json.obj() }
+                           catch { case(e:Exception) => e.printStackTrace(); Json.obj() }
 
     val code:Int = response.getStatusCode
     val body:Option[JsValue] = List(tryParse).find(_ => code.toString.take(1).toInt == 2)
