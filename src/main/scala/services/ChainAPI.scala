@@ -1,10 +1,12 @@
 package services
 
+import contracts.Contract
 import models._
 import play.api.libs.json.{JsValue, Json}
 import requests.{AbiBinToJsonRequest, AbiJsonToBinRequest, GetTableRowsRequest}
-import utils.{Client, Settings}
+import utils.{Client, Logger, Settings}
 import utils.Client.{get, post}
+import utils.Errors.{eitherError, futureEitherError}
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -14,12 +16,21 @@ object ChainAPI extends Settings {
   private def route(r:String):String = eosSettings.uri(s"/chain/$r")
 
   /***
+    *
     * @return - Instance of [[models.GetInfo]]
     */
   def getInfo: Future[Option[GetInfo]] =
     get(route("get_info")).map(_.map(_.as[GetInfo]))
 
+  def getLastIrreversibleBlock:Future[Option[Block]] = {
+    getInfo flatMap {
+      case None => Future(None)
+      case Some(info) => getBlock(info.last_irreversible_block_num.toString)
+    }
+  }
+
   /***
+    *
     * @param blockNumOrId - The block number or ID
     * @return - Instance of [[models.Block]]
     */
@@ -37,7 +48,7 @@ object ChainAPI extends Settings {
   /***
     *
     * @param accountName - The name of the contract to get the code for
-    * @return - Instance of [[models.Contract]]
+    * @return - Instance of [[Contract]]
     */
   def getCode(accountName:String): Future[Option[Contract]] =
     post(route("get_code"), Json.obj("account_name" -> accountName)).map(_.map(_.as[Contract]))
@@ -59,6 +70,7 @@ object ChainAPI extends Settings {
     post(route("get_table_rows"), Json.toJson(request)).map(_.map(_.as[Rows]))
 
   /***
+    *
     * @param code - Contract name
     * @param action - Action name
     * @param args - Data to turn into binary
@@ -83,11 +95,27 @@ object ChainAPI extends Settings {
   def abiBinToJson(request:AbiBinToJsonRequest):Future[Option[AbiBinToJson]] =
     post(route("abi_bin_to_json"), Json.toJson(request)).map(_.map(_.as[AbiBinToJson]))
 
+  def getRequiredKeys(unsignedTransaction:Transaction): Future[Option[List[String]]] = {
+    val data = Json.obj("transaction" -> Json.toJson(unsignedTransaction), "signatures"->Json.arr(), "available_keys"->Json.arr())
+    post(route("get_required_keys"), data)
+      .map(_.map(x => (x \ "required_keys").as[List[String]]))
+  }
 
-//TODO----------- Require other methods from wallet --------
-  def getRequiredKeys = ???                         //TODO--
+  def pushTransaction(signedTransaction:Transaction):Future[Either[PushedTransaction, String]] = {
+    signedTransaction.isSigned match {
+      case false => "Cannot push unsigned transaction"
+      case true => post(route("push_transaction"), Json.toJson(signedTransaction)) map {
+        case None => "Could not push transaction"
+        case Some(pushed) => Left(pushed.as[PushedTransaction])
+      }
+    }
+  }
+
+
+  //TODO----------- Require other methods from wallet --------
+//  def getRequiredKeys = ???                         //TODO--
   def pushBlock = ???                               //TODO--
-  def pushTransaction = ???                         //TODO--
+//  def pushTransaction = ???                         //TODO--
   def pushTransactions = ???                        //TODO--
 //TODO------------------------------------------------------
 

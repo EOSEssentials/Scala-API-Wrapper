@@ -1,5 +1,6 @@
 package models
 
+import contracts.{Action, Struct, Table, Type}
 import play.api.libs.json.{JsValue, Json}
 
 case class Abi(types:Option[List[Type]] = None,

@@ -1,8 +1,10 @@
-import org.scalatest.{AsyncFlatSpec, Matchers}
-import services.WalletAPI
-import TestingHelpers.assertNonEmptyStringResponseWithLogger
-import TestingHelpers.assertNonEmptyJsonResponseWithLogger
+import models.{Message, MessageAuthorization}
+import services.{EOSApis, WalletAPI}
 import utils.Logger
+import org.scalatest.{AsyncFlatSpec, Matchers}
+import play.api.libs.json.Json
+import TestingHelpers.assertNonEmptyJsonResponseWithLogger
+import TestingHelpers.assertNonEmptyStringResponseWithLogger
 
 class WalletApiTest extends AsyncFlatSpec with Matchers {
   val testWalletName: String = s"test-wallet-${Math.abs(scala.util.Random.nextInt*scala.util.Random.nextInt)}"
@@ -20,4 +22,14 @@ class WalletApiTest extends AsyncFlatSpec with Matchers {
            it should "be able to list wallet keys" in { WalletAPI.listKeys map {x => x} }
            it should "be able to list all wallet public keys" in { WalletAPI.getPublicKeys map {x => x} }
            it should "be able to set a timeout for wallets" in { WalletAPI.setTimeout(10) map {x => x} }
+
+//  it should "be able to sign a transaction" in {
+//    val message = Message("currency", "transfer", List(MessageAuthorization("currency", "active")))
+//    val data = Json.obj("from" -> "currency", "to" -> "inita", "quantity" -> 1)
+//    val scope = List("currency", "inita")
+//    EOSApis.sendMessage(message, data, scope) map { x =>
+//      Logger.debug("Result: " + x)
+//      assert(1==1)
+//    }
+//  }
 }

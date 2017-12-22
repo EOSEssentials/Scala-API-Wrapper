@@ -1,7 +1,6 @@
-import org.scalatest.{AsyncFlatSpec, Matchers}
-import services.AccountHistoryAPI
-import TestingHelpers.assertNonEmptyJsonResponseWithLogger
 import models.{GetTransactionWrapper, GetTransactionsWrapper}
+import services.AccountHistoryAPI
+import org.scalatest.{AsyncFlatSpec, Matchers}
 
 class AccountHistoryApiTest extends AsyncFlatSpec with Matchers {
 

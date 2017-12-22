@@ -12,6 +12,7 @@ object AccountHistoryAPI extends Settings {
   private def route(r:String):String = eosSettings.uri(s"/account_history/$r")
 
   /***
+    *
     * @param transactionId - The transaction_id to get
     * @return - Instance of [[models.GetTransactionWrapper]]
     */

@@ -1,12 +1,10 @@
-import java.lang.reflect.Method
-
-import org.scalatest.{Assertion, Matchers}
-import play.api.libs.json.{JsObject, JsValue}
 import utils.StringUtils.underToCamel
 import utils.{Client, Logger}
+import org.scalatest.{Assertion, Matchers}
+import play.api.libs.json.{JsObject, JsValue}
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 object TestingHelpers extends Matchers {
   def validateMethods(validationMethods:List[String], classPath:String): Boolean = {

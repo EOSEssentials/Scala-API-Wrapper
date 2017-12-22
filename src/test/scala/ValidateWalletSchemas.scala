@@ -1,6 +1,5 @@
-import org.scalatest.{AsyncFlatSpec, Matchers}
-import utils.Logger
 import utils.StringUtils.underToCamel
+import org.scalatest.{AsyncFlatSpec, Matchers}
 
 class ValidateWalletSchemas extends AsyncFlatSpec with Matchers {
   //TODO: There currently is no wallet.json schema available, for now using dummy
@@ -17,6 +16,7 @@ class ValidateWalletSchemas extends AsyncFlatSpec with Matchers {
     "wallet_set_timeout",
     "wallet_sign_trx"
   )
+    .map(_.replace("sign_trx", "sign_transaction")) // Supporting non-abbreviations
     .map(_.replace("wallet_", "")) // Removing the `wallet` before the methods because it is redundant.
     .map(x => underToCamel(x))
 

@@ -10,3 +10,5 @@ object AbiJsonToBinRequest { implicit val format = Json.format[AbiJsonToBinReque
 
 case class AbiBinToJsonRequest(code:String, action:String, binargs:String)
 object AbiBinToJsonRequest { implicit val format = Json.format[AbiBinToJsonRequest] }
+
+

@@ -1,6 +1,6 @@
-import org.scalatest.{Assertion, AsyncFlatSpec, FlatSpec, Matchers}
+import utils.Client
+import org.scalatest.{Assertion, AsyncFlatSpec, Matchers}
 import play.api.libs.json.{JsValue, Json}
-import utils.{Client, Logger}
 import TestingHelpers.assertNonEmptyJsonResponse
 
 import scala.concurrent.Future

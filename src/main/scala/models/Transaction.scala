@@ -6,10 +6,20 @@ case class Transaction(ref_block_num:Long,
                        ref_block_prefix:Long,
                        expiration:String,
                        scope:List[String],
-                       signatures:List[String],
+                       read_scope:Option[List[String]],
                        messages:List[JsValue],
-                       output:List[JsValue])
-object Transaction { implicit val format = Json.format[Transaction] }
+                       signatures:List[String],
+                       output:Option[List[JsValue]] = None){
+  def isSigned:Boolean = ref_block_num != -1 && ref_block_prefix != -1 && signatures.nonEmpty
+}
+object Transaction {
+  implicit val format = Json.format[Transaction]
+  def create(expiration:String, scope:List[String], binaryMessage:Message, readScope:Option[List[String]] = Some(List())) =
+    Transaction(-1, -1, expiration, scope, readScope, List(Json.toJson(binaryMessage)), List())
+}
+
+case class PushedTransaction(transaction_id:String, processed:Transaction)
+object PushedTransaction { implicit val format = Json.format[PushedTransaction] }
 
 case class GetTransactionWrapper(transaction_id:String, transaction: Transaction)
 object GetTransactionWrapper { implicit val format = Json.format[GetTransactionWrapper] }

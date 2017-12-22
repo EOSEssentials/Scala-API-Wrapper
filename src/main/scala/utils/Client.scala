@@ -41,6 +41,7 @@ object Client extends Settings {
   }
 
   implicit private def responseToJsonResponse(response: Response):Option[JsValue] = {
+    Logger.debug("Response: " + response)
     def tryParse:JsValue = try { Json.parse(response.getResponseBodyAsBytes) }
                            catch { case(e:Exception) => e.printStackTrace(); Json.obj() }
 
@@ -48,6 +49,7 @@ object Client extends Settings {
   }
 
   implicit private def responseToStringResponse(response: Response):Option[String] = {
+    Logger.debug("Response: " + response)
     List(response.getResponseBody).find(_ => is2N(response))
   }
 

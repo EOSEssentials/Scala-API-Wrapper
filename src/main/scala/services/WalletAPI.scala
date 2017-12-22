@@ -1,10 +1,13 @@
 package services
 
-import play.api.libs.json.JsValue
-import utils.Settings
+import models.Transaction
+import play.api.libs.json.{JsValue, Json}
+import utils.{Logger, Settings}
 import utils.Client.{get, post, postRaw}
+import utils.Errors.{eitherError, futureEitherError}
 
 import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
 object WalletAPI extends Settings {
 
@@ -22,11 +25,21 @@ object WalletAPI extends Settings {
   def lockAll:Future[Option[JsValue]] =
     get(route("lock_all"))
 
-  def unlock(name:String, privateKey:String): Future[Option[String]] =
-    postRaw(route("unlock"), s"[$name, $privateKey]")
+  def unlock(name:String, password:String): Future[Option[String]] =
+    postRaw(route("unlock"), Json.arr(name, password).toString)
 
-  def importKey(name:String, privateKey:String): Future[Option[String]] =
-    postRaw(route("import_key"), s"[$name, $privateKey]")
+  def importKey(name:String, privateKey:String): Future[Option[String]] = {
+    // I've decided to check if the key exists before to avoid the error message or previously added keys
+    listKeys flatMap {
+      case None => Future(None)
+      case Some(keysJson) =>
+        keysJson.as[List[List[String]]].flatten.contains(privateKey) match {
+          case false => postRaw(route("import_key"), Json.arr(name, privateKey).toString)
+          case true => Future(Some("{}")) // Returning true since key already exists
+        }
+    }
+  }
+
 
   def list: Future[Option[JsValue]] =
     get(route("list_wallets"))
@@ -40,37 +53,17 @@ object WalletAPI extends Settings {
   def setTimeout(timeout:Long): Future[Option[String]] =
     postRaw(route("set_timeout"), timeout.toString)
 
-  //TODO
-  /*
-  $ curl http://localhost:8889/v1/wallet/sign_transaction -X POST -d '[{"ref_block_num":21453,"ref_block_prefix":3165644999,"expiration":"2017-12-08T10:28:49","scope":["initb","initc"],"read_scope":[],"messages":[{"code":"currency","type":"transfer","authorization":[{"account":"initb","permission":"active"}],"data":"000000008093dd74000000000094dd74e803000000000000"}],"signatures":[]}, ["EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV"], ""]'
-Example wallet_sign_trx Result
-{
-  "ref_block_num": 21453,
-  "ref_block_prefix": 3165644999,
-  "expiration": "2017-12-08T10:28:49",
-  "scope": [
-    "initb",
-    "initc"
-  ],
-  "read_scope": [],
-  "messages": [
-    {
-      "code": "currency",
-      "type": "transfer",
-      "authorization": [
-        {
-          "account": "initb",
-          "permission": "active"
-        }
-      ],
-      "data": "000000008093dd74000000000094dd74e803000000000000"
+  def signTransaction(unsignedTransaction: Transaction, publicKey:String, chainId:String):Future[Either[Transaction, String]] = {
+    if(unsignedTransaction.isSigned) Future(Right("Transaction is already signed"))
+    else {
+      val json = Json.arr(Json.toJson(unsignedTransaction), Json.arr(publicKey), chainId)
+      Logger.warn("json: "+ json)
+      post(route("sign_transaction"), json) map {
+        case None => "Couldn't sign transaction"
+        case Some(signed) => Left(signed.as[Transaction])
+      }
     }
-  ],
-  "signatures": [
-    "1f393cc5ce6a6951fb53b11812345bcf14ffd978b07be386fd639eaf440bca7dca16b14833ec661ca0703d15e55a2a599a36d55ce78c4539433f6ce8bcee0158c3"
-  ]
-}
-   */
-  def signTrx = ???
+  }
+
 
 }

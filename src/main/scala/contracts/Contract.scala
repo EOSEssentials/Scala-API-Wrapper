@@ -1,5 +1,6 @@
-package models
+package contracts
 
+import models.Abi
 import play.api.libs.json.{JsValue, Json}
 
 case class Type(new_type_name:String, `type`:String)
@@ -16,3 +17,8 @@ object Table { implicit val format = Json.format[Table] }
 
 case class Contract(account_name:String, code_hash:String, wast:String, abi: Abi)
 object Contract { implicit val format = Json.format[Contract] }
+
+
+
+
+
