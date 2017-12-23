@@ -2,9 +2,6 @@
 
 A basic Scala wrapper for the [EOS](https://github.com/EOSIO) rpc api. Under the [MIT License](https://raw.githubusercontent.com/nsjames/EOS-Scala-RPC-API/master/license)
 
-*Note: This is currently a work in progress, once a working version is 
-ready it will be added to maven to be sbt importable*
-
 ---
 
 ### Requirements
@@ -21,7 +18,7 @@ Add the sbt dependency to your `build.sbt` file.
 ```
 "org.nsjames" %% "eos-scala-rpc-api" % "1.0-SNAPSHOT"
 ```
-*Not on maven yet, but you may publish locally for now, you can clone and use `sbt publishLocal` for now*
+*Not on maven yet, but you may publish locally for now, you can clone and use `sbt publishLocal`*
 
 ---
 
