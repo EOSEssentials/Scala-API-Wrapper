@@ -15,7 +15,7 @@ object Logger {
   def debug(message:String):Unit = log(message, Colors.GREEN, "DEBUG")
   def warn(message:String):Unit = log(message, Colors.RED, "WARN")
   def line() = System.out.print(s"${Colors.YELLOW}------------------------------------------------------------------${Colors.RESET} \n")
-  def colorText(message:String):String = s"${Colors.YELLOW}$message${Colors.RESET}"
+  def colorText(message:String, color: String):String = s"$color$message${Colors.RESET}"
   def block(messages:List[String]) = {
     Logger.line()
     messages.foreach(message => Logger.info(message))

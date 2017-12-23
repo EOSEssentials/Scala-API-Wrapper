@@ -7,7 +7,12 @@ ready it will be added to maven to be sbt importable*
 
 ---
 
-##Installation
+### Requirements
+* Scala version: 2.12.4
+* SBT version: 0.13.16
+
+
+## Installation
 
 
 **Getting the repo**
