@@ -16,7 +16,7 @@ Add the sbt dependency to your `build.sbt` file.
 ```
 "org.nsjames" %% "eos-scala-rpc-api" % "1.0-SNAPSHOT"
 ```
-*Not on maven yet, but you may publish locally for now, you can clone and use `sbt publicLocal` for now*
+*Not on maven yet, but you may publish locally for now, you can clone and use `sbt publishLocal` for now*
 
 ---
 
@@ -165,7 +165,6 @@ AccountHistoryAPI.getTransactions(accountName)
 EOSApis.accountHistory.getTransactions(accountName)
 
 ```
-
 
 
 
