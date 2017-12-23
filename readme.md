@@ -1,6 +1,6 @@
 # EOS RPC API for Scala
 
-A basic Scala wrapper for the [EOS](https://github.com/EOSIO) rpc api. Under the [MIT License](https://raw.githubusercontent.com/nsjames/EOS-Scala-RPC-API/master/license)
+A basic Scala wrapper for the [EOS](https://github.com/EOSIO) blockchain api. Under the [MIT License](https://raw.githubusercontent.com/nsjames/EOS-Scala-RPC-API/master/license)
 
 ---
 
