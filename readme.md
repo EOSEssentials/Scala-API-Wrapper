@@ -5,7 +5,12 @@ A basic Scala wrapper for the [EOS](https://github.com/EOSIO) rpc api. Under the
 *Note: This is currently a work in progress, once a working version is 
 ready it will be added to maven to be sbt importable*
 
+---
+
+###Usage
 
 ---
+
+
 
 

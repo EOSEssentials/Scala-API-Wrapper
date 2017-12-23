@@ -7,13 +7,6 @@ object Timestamp {
   def getExpiration(secondsFromNow:Int = 60):String = {
     val sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
     sdf.setTimeZone(TimeZone.getTimeZone("UTC"))
-
-    val expiresIn = secondsFromNow * 1000
-    sdf.format(System.currentTimeMillis + expiresIn).replace(" ", "T")
+    sdf.format(System.currentTimeMillis + secondsFromNow * 1000).replace(" ", "T")
   }
 }
-
-/*
-EOS_ASSERT(now <= trx.expiration, transaction_exception, "Transaction is expired",
-              ("now",now)("trx.exp",trx.expiration));
- */

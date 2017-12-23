@@ -1,6 +1,6 @@
 package services
 
-import models.{Message, PushedTransaction, Transaction}
+import models._
 import play.api.libs.json.{JsValue, Json}
 import utils.{Logger, Timestamp}
 
@@ -15,23 +15,37 @@ object EOSApis {
   val wallet = WalletAPI
   val accountHistory = AccountHistoryAPI
 
-  def sendMessage(message: Message, jsonData:JsValue, scope:List[String], publicKey:String): Future[Option[PushedTransaction]] = {
-    chain.getLastIrreversibleBlock flatMap {
-      case None => Future(None)
-      case Some(lastBlock) =>
-        chain.abiJsonToBin(message.code, message.`type`, jsonData) flatMap {
-          case None => Logger.debug("A"); Future(None)
-          case Some(abiJsonToBin) =>
-            val binaryMessage = message.copy(data = Some(abiJsonToBin.binargs))
-            val unsignedTrx = Transaction.create(Timestamp.getExpiration(120), scope, binaryMessage).copy(ref_block_num = lastBlock.block_num, ref_block_prefix = lastBlock.ref_block_prefix)
-            wallet.signTransaction(unsignedTrx, publicKey, "") flatMap {
-              case Right(err) => Logger.debug(s"Err $err"); Future(None)
-              case Left(signed) => chain.pushTransaction(signed) map {
-                case Right(err) => Logger.warn("Error: "+ err); None
-                case Left(pushedTransaction) => Some(pushedTransaction)
-              }
-            }
-        }
+  /***
+    * Send a single transaction
+    * @param messageBuilder - Instance of MessageBuilder
+    * @return - Instance of [[models.PushedTransaction]]
+    */
+  def sendMessage(messageBuilder: MessageBuilder): Future[PushedTransaction] = {
+    chain.getLastIrreversibleBlock flatMap { lastBlock =>
+      prepareTransaction(lastBlock, messageBuilder.message, messageBuilder.jsonData, messageBuilder.scope, messageBuilder.publicKey) flatMap { signed =>
+        chain.pushTransaction(signed)
+      }
+    }
+  }
+
+  /***
+    * Bulk send multiple transactions
+    * @param messageBuilders - A list of messageBuilders to convert into transactions
+    * @return - Instance of [[models.PushedTransaction]]
+    */
+  def sendMessages(messageBuilders: List[MessageBuilder]): Future[List[PushedTransaction]] = {
+    chain.getLastIrreversibleBlock flatMap { lastBlock =>
+      Future.sequence(messageBuilders.map(messageBuilder => prepareTransaction(lastBlock, messageBuilder.message, messageBuilder.jsonData, messageBuilder.scope, messageBuilder.publicKey))) flatMap { transactions =>
+        chain.pushTransactions(transactions)
+      }
+    }
+  }
+
+  private def prepareTransaction(lastBlock: Block, message: Message, jsonData:JsValue, scope:List[String], publicKey:String):Future[Transaction] = {
+    chain.abiJsonToBin(message.code, message.`type`, jsonData) flatMap { abiJsonToBin =>
+      val binaryMessage = message.copy(data = Some(abiJsonToBin.binargs))
+      val unsignedTrx = Transaction.create(Timestamp.getExpiration(120), scope, binaryMessage).copy(ref_block_num = lastBlock.block_num, ref_block_prefix = lastBlock.ref_block_prefix)
+      wallet.signTransaction(unsignedTrx, publicKey, "")
     }
   }
 }

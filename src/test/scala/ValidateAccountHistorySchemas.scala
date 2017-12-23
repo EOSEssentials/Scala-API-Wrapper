@@ -6,10 +6,9 @@ class ValidateAccountHistorySchemas extends AsyncFlatSpec with Matchers {
   var methods:List[String] = List()
 
   "Client" should "be able to fetch methods schema" in {
-    TestingHelpers.getSchemaJson(jsonSchemaURI) map {
-      case None =>            assert(1==2)
-      case Some(results) =>   methods = results
-                              assert(methods.nonEmpty)
+    TestingHelpers.getSchemaJson(jsonSchemaURI) map { results =>
+      methods = results
+      assert(methods.nonEmpty)
     }
   }
 

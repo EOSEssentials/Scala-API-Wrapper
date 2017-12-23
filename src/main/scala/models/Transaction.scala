@@ -21,8 +21,11 @@ object Transaction {
 case class PushedTransaction(transaction_id:String, processed:Transaction)
 object PushedTransaction { implicit val format = Json.format[PushedTransaction] }
 
-case class GetTransactionWrapper(transaction_id:String, transaction: Transaction)
+//case class PushedTransactions(transaction_id:String, processed:Transaction)
+//object PushedTransaction { implicit val format = Json.format[PushedTransaction] }
+
+case class GetTransactionWrapper(transaction_id:String, transaction: Transaction, seq_num:Option[Long] = None)
 object GetTransactionWrapper { implicit val format = Json.format[GetTransactionWrapper] }
 
-case class GetTransactionsWrapper(transactions:List[Transaction], time_limit_exceeded_error:Option[Boolean] = None)
+case class GetTransactionsWrapper(transactions:List[GetTransactionWrapper], time_limit_exceeded_error:Option[Boolean] = None)
 object GetTransactionsWrapper { implicit val format = Json.format[GetTransactionsWrapper] }
