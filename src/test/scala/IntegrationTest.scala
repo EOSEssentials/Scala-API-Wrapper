@@ -12,7 +12,7 @@ class IntegrationTest extends AsyncFlatSpec with Matchers {
 
   val eos = EOSApis
 
-  // A wallet will exported to the console one first run, once it has been generated
+  // A wallet will be exported to the console on first run, once it has been generated
   // switch to `true` and fill the variables below
   val walletGenerated:Boolean   = true
   val generatedWalletName       = "test-wallet-2126438256"
