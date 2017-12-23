@@ -1,4 +1,4 @@
-package utils
+package org.nsjames.utils
 import java.util.Calendar
 
 object Logger {

@@ -1,10 +1,10 @@
-package services
+package org.nsjames.services
 
-import models.Transaction
+import org.nsjames.models.Transaction
 import play.api.libs.json.{JsValue, Json}
-import utils.{Client, Settings}
-import utils.Client.{get, post, postRaw}
-import utils.Errors.{eitherError, futureEitherError}
+import org.nsjames.utils.{Client, Settings}
+import org.nsjames.utils.Client.{get, post, postRaw}
+import org.nsjames.utils.Errors.{eitherError, futureEitherError}
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -71,7 +71,7 @@ object WalletAPI extends Settings {
   }
 
 
-  //TODO: These could really use return models
+  //TODO: These could really use return org.nsjames.models
 
   def list: Future[List[String]] =
     get(route("list_wallets")).map(_.as[List[String]])

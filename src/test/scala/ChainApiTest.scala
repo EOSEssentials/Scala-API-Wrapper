@@ -1,6 +1,6 @@
-import contracts.Contract
-import models._
-import services.ChainAPI
+import org.nsjames.contracts.Contract
+import org.nsjames.models._
+import org.nsjames.services.ChainAPI
 import org.scalatest.{AsyncFlatSpec, Matchers}
 import play.api.libs.json.Json
 import TestingHelpers.booleanToAssertion

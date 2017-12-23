@@ -1,9 +1,9 @@
-import contracts.CurrencyContract
-import models.MessageBuilder
-import services.EOSApis
+import org.nsjames.contracts.CurrencyContract
+import org.nsjames.models.MessageBuilder
+import org.nsjames.services.EOSApis
 import org.scalatest.{AsyncFlatSpec, Matchers}
 import play.api.libs.json.Json
-import utils.{Client, Logger}
+import org.nsjames.utils.{Client, Logger}
 
 class IntegrationTest extends AsyncFlatSpec with Matchers {
 
@@ -14,7 +14,7 @@ class IntegrationTest extends AsyncFlatSpec with Matchers {
 
   // A wallet will be exported to the console on first run, once it has been generated
   // switch to `true` and fill the variables below
-  val walletGenerated:Boolean   = true
+  val walletGenerated:Boolean   = false
   val generatedWalletName       = "test-wallet-2126438256"
   val generatedWalletPassword   = "PW5K5JxPUGpoE6u9TbN1yWhS63pgE8WjknmjiwPZ7dRv1VM4j3KvL"
 
@@ -55,21 +55,21 @@ class IntegrationTest extends AsyncFlatSpec with Matchers {
 
   "EOSApis" should "be able to create, sign, and push a `transfer` message using a single method" in {
     val transfer = CurrencyContract.Transfer("currency", "inita", 10)
-    eos.sendMessage(MessageBuilder(transfer.message, Json.toJson(transfer), List("currency","inita"), activePublic)) map { trx =>
+    eos.sendMessage(MessageBuilder(transfer.message, Json.toJson(transfer), transfer.scopes, activePublic)) map { trx =>
       Logger.debug("Transaction: " + trx)
       assert(1==1)
     }
   }
 
-  //TODO: Failing test
-  ignore should "be able to create, sign, and push multiple `transfer` messages using a single method" in {
+  it should "be able to create, sign, and push multiple `transfer` messages using a single method" in {
     val messages = List(
-      MessageBuilder(CurrencyContract.Transfer("currency", "inita", 10).message, Json.toJson(CurrencyContract.Transfer("currency", "inita", 10)), List("currency","inita"), activePublic),
-      MessageBuilder(CurrencyContract.Transfer("currency", "initb", 10).message, Json.toJson(CurrencyContract.Transfer("currency", "initb", 10)), List("currency","inita"), activePublic),
-      MessageBuilder(CurrencyContract.Transfer("currency", "initc", 10).message, Json.toJson(CurrencyContract.Transfer("currency", "initc", 10)), List("currency","inita"), activePublic)
+      MessageBuilder(CurrencyContract.Transfer("currency", "inita", 11).message, Json.toJson(CurrencyContract.Transfer("currency", "inita", 10)), List("currency","inita"), activePublic),
+      MessageBuilder(CurrencyContract.Transfer("currency", "initb", 13).message, Json.toJson(CurrencyContract.Transfer("currency", "initb", 10)), List("currency","initb"), activePublic),
+      MessageBuilder(CurrencyContract.Transfer("currency", "initc", 15).message, Json.toJson(CurrencyContract.Transfer("currency", "initc", 10)), List("currency","initc"), activePublic)
     )
-    eos.sendMessages(messages) map { trx =>
-      Logger.debug("Transaction: " + trx)
+    eos.sendMessages(messages) map { trxs =>
+      Logger.debug("Successful transactions: " + trxs.succeeded)
+      Logger.debug("Failed transactions: " + trxs.failed)
       assert(1==1)
     }
   }

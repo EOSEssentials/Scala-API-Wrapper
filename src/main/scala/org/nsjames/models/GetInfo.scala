@@ -1,4 +1,4 @@
-package models
+package org.nsjames.models
 
 import play.api.libs.json.Json
 case class GetInfo(server_version:String,

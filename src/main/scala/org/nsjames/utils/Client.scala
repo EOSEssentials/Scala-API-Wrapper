@@ -1,4 +1,4 @@
-package utils
+package org.nsjames.utils
 import org.asynchttpclient.AsyncHttpClient
 import org.asynchttpclient.Dsl._
 import org.asynchttpclient._
@@ -42,12 +42,12 @@ object Client extends Settings {
   }
 
   implicit private def responseToJsonResponse(response: Response):JsValue = is2N(response) match {
-    case true => Logger.debug("response: " + response); Json.parse(response.getResponseBodyAsBytes)
+    case true => Json.parse(response.getResponseBodyAsBytes)
     case false => throw new EOSApiException(response.getResponseBody)
   }
 
   implicit private def responseToStringResponse(response: Response):String = is2N(response) match {
-    case true => Logger.debug("response: " + response); response.getResponseBody
+    case true => response.getResponseBody
     case false => throw new EOSApiException(response.getResponseBody)
   }
 

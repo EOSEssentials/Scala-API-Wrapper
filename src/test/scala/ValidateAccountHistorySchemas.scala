@@ -13,7 +13,7 @@ class ValidateAccountHistorySchemas extends AsyncFlatSpec with Matchers {
   }
 
   "AccountHistoryAPI" should "have all required methods" in {
-    assert(TestingHelpers.validateMethods(methods, "services.AccountHistoryAPI"))
+    assert(TestingHelpers.validateMethods(methods, "org.nsjames.services.AccountHistoryAPI"))
   }
 
 }

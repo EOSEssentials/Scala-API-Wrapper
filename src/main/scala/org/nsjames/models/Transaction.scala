@@ -1,4 +1,4 @@
-package models
+package org.nsjames.models
 
 import play.api.libs.json.{JsValue, Json}
 
@@ -21,8 +21,8 @@ object Transaction {
 case class PushedTransaction(transaction_id:String, processed:Transaction)
 object PushedTransaction { implicit val format = Json.format[PushedTransaction] }
 
-//case class PushedTransactions(transaction_id:String, processed:Transaction)
-//object PushedTransaction { implicit val format = Json.format[PushedTransaction] }
+case class PushedTransactions(succeeded:List[PushedTransaction], failed:List[JsValue])
+object PushedTransactions { implicit val format = Json.format[PushedTransactions] }
 
 case class GetTransactionWrapper(transaction_id:String, transaction: Transaction, seq_num:Option[Long] = None)
 object GetTransactionWrapper { implicit val format = Json.format[GetTransactionWrapper] }

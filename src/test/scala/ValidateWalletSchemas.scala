@@ -1,4 +1,4 @@
-import utils.StringUtils.underToCamel
+import org.nsjames.utils.StringUtils.underToCamel
 import org.scalatest.{AsyncFlatSpec, Matchers}
 
 class ValidateWalletSchemas extends AsyncFlatSpec with Matchers {
@@ -21,6 +21,6 @@ class ValidateWalletSchemas extends AsyncFlatSpec with Matchers {
     .map(x => underToCamel(x))
 
   "WalletAPI" should "have all required methods" in {
-    assert(TestingHelpers.validateMethods(methods, "services.WalletAPI"))
+    assert(TestingHelpers.validateMethods(methods, "org.nsjames.services.WalletAPI"))
   }
 }

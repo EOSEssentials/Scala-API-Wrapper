@@ -1,9 +1,9 @@
-package services
+package org.nsjames.services
 
-import models.{GetTransactionWrapper, GetTransactionsWrapper}
+import org.nsjames.models.{GetTransactionWrapper, GetTransactionsWrapper}
 import play.api.libs.json.{JsValue, Json}
-import utils.{Logger, Settings}
-import utils.Client.{get, post}
+import org.nsjames.utils.{Logger, Settings}
+import org.nsjames.utils.Client.{get, post}
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -14,7 +14,7 @@ object AccountHistoryAPI extends Settings {
   /***
     *
     * @param transactionId - The transaction_id to get
-    * @return - Instance of [[models.GetTransactionWrapper]]
+    * @return - Instance of [[org.nsjames.models.GetTransactionWrapper]]
     */
   def getTransaction(transactionId:String): Future[GetTransactionWrapper] =
     post(route("get_transaction"), Json.obj("transaction_id" -> transactionId)).map(_.as[GetTransactionWrapper])
@@ -24,7 +24,7 @@ object AccountHistoryAPI extends Settings {
     * @param accountName - The name of the account to get transactions for
     * @param skipSeq - [OPTIONAL]
     * @param numSeq - [OPTIONAL]
-    * @return - Instance of [[models.GetTransactionsWrapper]]
+    * @return - Instance of [[org.nsjames.models.GetTransactionsWrapper]]
     */
   def getTransactions(accountName:String, skipSeq:Option[Int] = None, numSeq:Option[Int] = None):Future[GetTransactionsWrapper] =
     post(route("get_transactions"), Json.obj("account_name" -> accountName, "skip_seq" -> skipSeq, "num_seq" -> numSeq))

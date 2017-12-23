@@ -1,6 +1,6 @@
-package contracts
+package org.nsjames.contracts
 
-import models.Abi
+import org.nsjames.models.Abi
 import play.api.libs.json.{JsValue, Json}
 
 case class Type(new_type_name:String, `type`:String)

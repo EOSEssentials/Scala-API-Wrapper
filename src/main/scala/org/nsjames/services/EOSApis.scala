@@ -1,8 +1,8 @@
-package services
+package org.nsjames.services
 
-import models._
+import org.nsjames.models._
 import play.api.libs.json.{JsValue, Json}
-import utils.{Logger, Timestamp}
+import org.nsjames.utils.{EOSApiException, Logger, Timestamp}
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -17,8 +17,9 @@ object EOSApis {
 
   /***
     * Send a single transaction
+ *
     * @param messageBuilder - Instance of MessageBuilder
-    * @return - Instance of [[models.PushedTransaction]]
+    * @return - Instance of [[org.nsjames.models.PushedTransaction]]
     */
   def sendMessage(messageBuilder: MessageBuilder): Future[PushedTransaction] = {
     chain.getLastIrreversibleBlock flatMap { lastBlock =>
@@ -30,13 +31,17 @@ object EOSApis {
 
   /***
     * Bulk send multiple transactions
+ *
     * @param messageBuilders - A list of messageBuilders to convert into transactions
-    * @return - Instance of [[models.PushedTransaction]]
+    * @return - Instance of [[org.nsjames.models.PushedTransaction]]
     */
-  def sendMessages(messageBuilders: List[MessageBuilder]): Future[List[PushedTransaction]] = {
-    chain.getLastIrreversibleBlock flatMap { lastBlock =>
-      Future.sequence(messageBuilders.map(messageBuilder => prepareTransaction(lastBlock, messageBuilder.message, messageBuilder.jsonData, messageBuilder.scope, messageBuilder.publicKey))) flatMap { transactions =>
-        chain.pushTransactions(transactions)
+  def sendMessages(messageBuilders: List[MessageBuilder]): Future[PushedTransactions] = {
+    MessageBuilder.allMessagesAreUnique(messageBuilders) match {
+      case false => throw new EOSApiException("Messages must be unique")
+      case true => chain.getLastIrreversibleBlock flatMap { lastBlock =>
+        Future.sequence(messageBuilders.map(messageBuilder => prepareTransaction(lastBlock, messageBuilder.message, messageBuilder.jsonData, messageBuilder.scope, messageBuilder.publicKey))) flatMap { transactions =>
+          chain.pushTransactions(transactions)
+        }
       }
     }
   }

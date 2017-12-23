@@ -1,9 +1,13 @@
 enablePlugins(JavaAppPackaging)
-name := "eos-scala-rpc-api"
-
-version := "1.0"
-
 scalaVersion := "2.12.4"
+
+organization := "org.nsjames"
+name := "eos-scala-rpc-api"
+version := "1.0-SNAPSHOT"
+
+//publishTo := Some(Resolver.file("eos-scala-rpc-api",  new File( "C:/Users/Work/.ivy2/local" )) )
+//publishTo := Some(Resolver.file("eos-scala-rpc-api",  new File(Path.userHome.absolutePath+"/.m2/repository")))
+//credentials += Credentials(Path.userHome.absolutePath / ".ivy2" / ".credentials")
 
 mappings in Universal ++= {
   (baseDirectory.value / "conf").list().map(f => {

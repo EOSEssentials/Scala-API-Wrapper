@@ -1,4 +1,4 @@
-package utils
+package org.nsjames.utils
 
 import scala.collection.JavaConverters._
 import com.typesafe.config.{Config, ConfigFactory}
@@ -14,8 +14,9 @@ trait Settings {
   )
 
   // EOS
+  private val currentApiVersion = "v1"
   case class EosSettings(nodes:List[String]){
-    def node:String = nodes.head
+    def node:String = s"${nodes.head}/$currentApiVersion/"
     def uri(route:String):String = node + "/" + (if(route.head=='/') route.drop(1) else route)
   }
   val eosSettings:EosSettings = EosSettings(

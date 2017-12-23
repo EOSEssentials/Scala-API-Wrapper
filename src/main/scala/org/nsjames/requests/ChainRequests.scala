@@ -1,4 +1,4 @@
-package requests
+package org.nsjames.requests
 
 import play.api.libs.json.{JsValue, Json}
 

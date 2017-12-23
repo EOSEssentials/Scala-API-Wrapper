@@ -1,5 +1,5 @@
-import services.{EOSApis, WalletAPI}
-import utils.Logger
+import org.nsjames.services.{EOSApis, WalletAPI}
+import org.nsjames.utils.Logger
 import org.scalatest.{AsyncFlatSpec, Matchers}
 import TestingHelpers.booleanToAssertion
 import play.api.libs.json.JsValue

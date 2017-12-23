@@ -1,4 +1,4 @@
-package utils
+package org.nsjames.utils
 import java.util.{Date, TimeZone}
 import java.text.SimpleDateFormat
 import java.time.Instant

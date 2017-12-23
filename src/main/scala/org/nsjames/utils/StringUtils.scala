@@ -1,4 +1,4 @@
-package utils
+package org.nsjames.utils
 
 object StringUtils {
   def underToCamel(s:String, acc:String = ""):String = if(s.isEmpty) acc

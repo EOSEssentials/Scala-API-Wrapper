@@ -1,12 +1,12 @@
-package services
+package org.nsjames.services
 
-import contracts.Contract
-import models._
+import org.nsjames.contracts.Contract
+import org.nsjames.models._
 import play.api.libs.json.{JsValue, Json}
-import requests.{AbiBinToJsonRequest, AbiJsonToBinRequest, GetTableRowsRequest}
-import utils.{Client, EOSApiException, Logger, Settings}
-import utils.Client.{get, post}
-import utils.Errors.{eitherError, futureEitherError}
+import org.nsjames.requests.{AbiBinToJsonRequest, AbiJsonToBinRequest, GetTableRowsRequest}
+import org.nsjames.utils.{Client, EOSApiException, Logger, Settings}
+import org.nsjames.utils.Client.{get, post}
+import org.nsjames.utils.Errors.{eitherError, futureEitherError}
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -17,7 +17,7 @@ object ChainAPI extends Settings {
 
   /***
     *
-    * @return - Instance of [[models.GetInfo]]
+    * @return - Instance of [[org.nsjames.models.GetInfo]]
     */
   def getInfo: Future[GetInfo] =
     get(route("get_info")).map(_.as[GetInfo])
@@ -31,7 +31,7 @@ object ChainAPI extends Settings {
   /***
     *
     * @param blockNumOrId - The block number or ID
-    * @return - Instance of [[models.Block]]
+    * @return - Instance of [[org.nsjames.models.Block]]
     */
   def getBlock(blockNumOrId:String): Future[Block] =
     post(route("get_block"), Json.obj("block_num_or_id" -> blockNumOrId)).map(_.as[Block])
@@ -39,7 +39,7 @@ object ChainAPI extends Settings {
   /***
     *
     * @param accountName - The name of the account
-    * @return - Instance of [[models.Account]]
+    * @return - Instance of [[org.nsjames.models.Account]]
     */
   def getAccount(accountName:String): Future[Account] =
     post(route("get_account"), Json.obj("account_name" -> accountName)).map(_.as[Account])
@@ -60,7 +60,7 @@ object ChainAPI extends Settings {
     * @param lowerBound
     * @param upperBound
     * @param limit
-    * @return - Instance of [[models.Rows]]
+    * @return - Instance of [[org.nsjames.models.Rows]]
     */
   def getTableRows(scope:String, code:String, table:String, lowerBound:Long = 0, upperBound:Long = -1, limit:Long = 10):Future[Rows] =
     getTableRows(GetTableRowsRequest(scope, code, table, true, lowerBound, upperBound, limit))
@@ -73,7 +73,7 @@ object ChainAPI extends Settings {
     * @param code - Contract name
     * @param action - Action name
     * @param args - Data to turn into binary
-    * @return - Instance of [[models.AbiJsonToBin]]
+    * @return - Instance of [[org.nsjames.models.AbiJsonToBin]]
     */
   def abiJsonToBin(code:String, action:String, args:JsValue):Future[AbiJsonToBin] =
     abiJsonToBin(AbiJsonToBinRequest(code, action, args))
@@ -86,7 +86,7 @@ object ChainAPI extends Settings {
     * @param code - Contract name
     * @param action - Action name
     * @param binargs - Binary data to turn into json
-    * @return - Instance of [[models.AbiBinToJson]]
+    * @return - Instance of [[org.nsjames.models.AbiBinToJson]]
     */
   def abiBinToJson(code:String, action:String, binargs:String):Future[AbiBinToJson] =
     abiBinToJson(AbiBinToJsonRequest(code, action, binargs))
@@ -108,15 +108,16 @@ object ChainAPI extends Settings {
     }
   }
 
-  def pushTransactions(signedTransactions:List[Transaction]):Future[List[PushedTransaction]] = {
+  def pushTransactions(signedTransactions:List[Transaction]):Future[PushedTransactions] = {
     signedTransactions.forall(_.isSigned) match {
       case false => throw new EOSApiException("One or more transactions is unsigned")
-      case true => post(route("push_transactions"), Json.toJson(signedTransactions)) map { pushed =>
-        pushed.as[List[PushedTransaction]]
+      case true => post(route("push_transactions"), Json.toJson(signedTransactions)) map { json =>
+        val pushed = json.as[List[JsValue]]
+        val (succeeded, failed) = pushed.partition(_.validate[PushedTransaction].isSuccess)
+        PushedTransactions(succeeded.map(_.as[PushedTransaction]), failed)
       }
     }
   }
 
-  //TODO: Whoops, forgot these
   def pushBlock = ???
 }

@@ -13,7 +13,7 @@ class ValidateChainSchemas extends AsyncFlatSpec with Matchers {
   }
 
   "ChainAPI" should "have all required methods" in {
-    assert(TestingHelpers.validateMethods(methods, "services.ChainAPI"))
+    assert(TestingHelpers.validateMethods(methods, "org.nsjames.services.ChainAPI"))
   }
 
 }

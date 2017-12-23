@@ -1,5 +1,5 @@
-import models.{GetTransactionWrapper, GetTransactionsWrapper}
-import services.AccountHistoryAPI
+import org.nsjames.models.{GetTransactionWrapper, GetTransactionsWrapper}
+import org.nsjames.services.AccountHistoryAPI
 import org.scalatest.{AsyncFlatSpec, Matchers}
 import TestingHelpers.booleanToAssertion
 

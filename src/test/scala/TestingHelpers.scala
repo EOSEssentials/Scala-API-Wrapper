@@ -1,5 +1,5 @@
-import utils.StringUtils.underToCamel
-import utils.{Client, Logger}
+import org.nsjames.utils.StringUtils.underToCamel
+import org.nsjames.utils.{Client, Logger}
 import org.scalatest.{Assertion, Matchers}
 import play.api.libs.json.{JsObject, JsValue}
 
