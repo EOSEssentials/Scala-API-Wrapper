@@ -1,5 +1,7 @@
 # EOS RPC API for Scala
 
+**WARNING** This version is currently built for Dawn2 and highly out of sync with the EOSIO software.
+
 A basic Scala wrapper for the [EOS](https://github.com/EOSIO) blockchain api. Under the [MIT License](https://raw.githubusercontent.com/nsjames/EOS-Scala-RPC-API/master/license)
 
 ---
